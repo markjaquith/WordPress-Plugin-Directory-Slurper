@@ -1,0 +1,27 @@
+#!/usr/bin/php
+<?php
+// $last_revision = 345166;
+// Fetch with: http://stackoverflow.com/questions/1499811/how-to-programmatically-get-svn-revision-number
+if ( $last_revision ) {
+	$changelog_url = sprintf( 'http://plugins.trac.wordpress.org/log/?verbose=on&format=changelog&rev=%s', $last_revision );
+	$changes = file_get_contents( $changelog_url );
+	preg_match_all( '#\w*\* ([^/A-Z]+)/[^ ]+ \((added|modified|deleted|moved|copied)\)' . "\n" . '#', $changes, $matches );
+	$plugins = array_unique( $matches[1] );
+} else {
+	$plugins = file_get_contents( 'http://svn.wp-plugins.org/' );
+	preg_match_all( '#<li><a href="([^/]+)/">([^/]+)/</a></li>#', $plugins, $matches );
+	$plugins = $matches[1];
+}
+
+foreach ( $plugins as $plugin ) {
+	$plugin = urldecode( $plugin );
+	echo "Downloading " . $plugin . "\r\n";
+	exec( 'wget -q -np -O ' . escapeshellarg( 'wp-plugin-zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.zip' ) . ' > /dev/null' );
+	if ( file_exists( 'wp-plugins/' . $plugin . '.zip' ) ) {
+		exec( 'rm -rf ' . escapeshellarg( 'wp-plugins/' . $plugin ) );
+		exec( 'unzip -d wp-plugins ' . escapeshellarg( 'wp-plugin-zips/' . $plugin . '.zip' ) );
+	}
+}
+
+// Update SVN latest revision number: http://stackoverflow.com/questions/1499811/how-to-programmatically-get-svn-revision-number
+echo "[DONE]\r\n";
