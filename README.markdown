@@ -12,6 +12,7 @@ Requirements
 ------------
 
 * PHP 5.2
+* wget
 * Unix system (only tested on Mac OS X)
 
 Instructions
