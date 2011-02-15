@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-// $last_revision = 345166;
+$last_revision = 345166;
 // Fetch with: http://stackoverflow.com/questions/1499811/how-to-programmatically-get-svn-revision-number
 if ( $last_revision ) {
 	$changelog_url = sprintf( 'http://plugins.trac.wordpress.org/log/?verbose=on&format=changelog&rev=%s', $last_revision );
@@ -16,10 +16,10 @@ if ( $last_revision ) {
 foreach ( $plugins as $plugin ) {
 	$plugin = urldecode( $plugin );
 	echo "Downloading " . $plugin . "\r\n";
-	exec( 'wget -q -np -O ' . escapeshellarg( 'wp-plugin-zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.zip' ) . ' > /dev/null' );
-	if ( file_exists( 'wp-plugins/' . $plugin . '.zip' ) ) {
-		exec( 'rm -rf ' . escapeshellarg( 'wp-plugins/' . $plugin ) );
-		exec( 'unzip -d wp-plugins ' . escapeshellarg( 'wp-plugin-zips/' . $plugin . '.zip' ) );
+	exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.zip' ) . ' > /dev/null' );
+	if ( file_exists( 'plugins/' . $plugin . '.zip' ) ) {
+		exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
+		exec( 'unzip -d plugins ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
 	}
 }
 
