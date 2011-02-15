@@ -15,7 +15,7 @@ if ( $last_revision ) {
 
 foreach ( $plugins as $plugin ) {
 	$plugin = urldecode( $plugin );
-	echo "Downloading " . $plugin . "\r\n";
+	echo "Updating " . $plugin . "\r\n";
 	exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.zip' ) . ' > /dev/null' );
 	if ( file_exists( 'plugins/' . $plugin . '.zip' ) ) {
 		exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
