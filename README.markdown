@@ -44,7 +44,7 @@ Only those changed plugins are updated after the initial sync.
 
 Copyright & License
 -------------------
-Copyright (C) 2010-2011 Mark Jaquith
+Copyright (C) 2011 Mark Jaquith
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
