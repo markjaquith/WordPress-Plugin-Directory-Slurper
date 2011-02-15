@@ -1,28 +1,54 @@
 #!/usr/bin/php
 <?php
-$last_revision = 345166;
-// Fetch with: http://stackoverflow.com/questions/1499811/how-to-programmatically-get-svn-revision-number
-if ( $last_revision ) {
-	$changelog_url = sprintf( 'http://plugins.trac.wordpress.org/log/?verbose=on&format=changelog&rev=%s', $last_revision );
-	$changes = file_get_contents( $changelog_url );
-	preg_match_all( '#\w*\* ([^/A-Z]+)/[^ ]+ \((added|modified|deleted|moved|copied)\)' . "\n" . '#', $changes, $matches );
-	$plugins = array_unique( $matches[1] );
+echo "Determining most recent SVN revision...\r\n";
+try {
+	$changelog = @file_get_contents( 'http://plugins.trac.wordpress.org/log/?format=changelog&stop_rev=HEAD' );
+	if ( !$changelog )
+		throw new Exception( 'Could not fetch the SVN changelog' );
+	preg_match( '#\[([0-9]+)\]#', $changelog, $matches );
+	if ( !$matches[1] )
+		throw new Exception( 'Could not determine most recent revision.' );
+} catch ( Exception $e ) {
+	die( $e->getMessage() . "\r\n" );
+}
+$svn_last_revision = (int) $matches[1];
+echo "Most recent SVN revision: " . $svn_last_revision . "\r\n";
+if ( file_exists( 'plugins/.last-revision' ) ) {
+	$last_revision = (int) file_get_contents( 'plugins/.last-revision' );
+	echo "Last synced revision: " . $last_revision . "\r\n";
 } else {
-	$plugins = file_get_contents( 'http://svn.wp-plugins.org/' );
-	preg_match_all( '#<li><a href="([^/]+)/">([^/]+)/</a></li>#', $plugins, $matches );
-	$plugins = $matches[1];
+	$last_revision = false;
+	echo "You have not yet performed a successful sync. Settle in. This will take a while.\r\n";
 }
 
-foreach ( $plugins as $plugin ) {
-	$plugin = urldecode( $plugin );
-	echo "Updating " . $plugin . "\r\n";
-	exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.zip' ) . ' > /dev/null' );
-	if ( file_exists( 'plugins/' . $plugin . '.zip' ) ) {
-		exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
-		exec( 'unzip -d plugins ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
-		exec( 'rm -rf ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
+if ( $last_revision != $svn_last_revision ) {
+	if ( $last_revision ) {
+		$changelog_url = sprintf( 'http://plugins.trac.wordpress.org/log/?verbose=on&format=changelog&stop_rev=%s', $last_revision );
+		$changes = file_get_contents( $changelog_url );
+		preg_match_all( '#\w*\* ([^/A-Z]+)/[^ ]+ \((added|modified|deleted|moved|copied)\)' . "\n" . '#', $changes, $matches );
+		$plugins = array_unique( $matches[1] );
+	} else {
+		$plugins = file_get_contents( 'http://svn.wp-plugins.org/' );
+		preg_match_all( '#<li><a href="([^/]+)/">([^/]+)/</a></li>#', $plugins, $matches );
+		$plugins = $matches[1];
 	}
+
+	foreach ( $plugins as $plugin ) {
+		$plugin = urldecode( $plugin );
+		echo "Updating " . $plugin . "\r\n";
+		exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.zip' ) . ' > /dev/null' );
+		if ( file_exists( 'plugins/' . $plugin . '.zip' ) ) {
+			exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
+			exec( 'unzip -d plugins ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
+			exec( 'rm -rf ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
+		}
+	}
+
+	if ( file_put_contents( 'plugins/.last-revision', $svn_last_revision ) )
+		echo "[CLEANUP] Updated plugins/.last-revision to " . $svn_last_revision . "\r\n";
+	else
+		echo "[ERROR] Could not update plugins/.last-revision to " . $svn_last_revision . "\r\n";	
 }
 
-// Update SVN latest revision number: http://stackoverflow.com/questions/1499811/how-to-programmatically-get-svn-revision-number
+echo "[SUCCESS] Done updating plugins!\r\n";
 echo "[DONE]\r\n";
