@@ -20,6 +20,8 @@ Instructions
 1. `cd WordPress-Plugin-Directory-Slurper`
 2. `./update`
 
+The `plugins/` directory will contain all the plugins, when the script is done.
+
 FAQ
 ----
 
