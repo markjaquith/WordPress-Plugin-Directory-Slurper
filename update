@@ -25,7 +25,7 @@ if ( $last_revision != $svn_last_revision ) {
 	if ( $last_revision ) {
 		$changelog_url = sprintf( 'http://plugins.trac.wordpress.org/log/?verbose=on&mode=follow_copy&format=changelog&rev=%d&limit=%d', $svn_last_revision, $svn_last_revision - $last_revision );
 		$changes = file_get_contents( $changelog_url );
-		preg_match_all( '#\w*\* ([^/A-Z]+)/[^ ]+ \((added|modified|deleted|moved|copied)\)' . "\n" . '#', $changes, $matches );
+		preg_match_all( '#^' . "\t" . '*\* ([^/A-Z ]+)[ /].* \((added|modified|deleted|moved|copied)\)' . "\n" . '#m', $changes, $matches );
 		$plugins = array_unique( $matches[1] );
 	} else {
 		$plugins = file_get_contents( 'http://svn.wp-plugins.org/' );
