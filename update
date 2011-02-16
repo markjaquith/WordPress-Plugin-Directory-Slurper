@@ -36,7 +36,7 @@ if ( $last_revision != $svn_last_revision ) {
 	foreach ( $plugins as $plugin ) {
 		$plugin = urldecode( $plugin );
 		echo "Updating " . $plugin . "\r\n";
-		exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.zip' ) . ' > /dev/null' );
+		exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.zip?nostats=1' ) . ' > /dev/null' );
 		if ( file_exists( 'plugins/' . $plugin . '.zip' ) ) {
 			exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
 			exec( 'unzip -d plugins ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
