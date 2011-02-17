@@ -34,16 +34,20 @@ if ( $last_revision != $svn_last_revision ) {
 		preg_match_all( '#<li><a href="([^/]+)/">([^/]+)/</a></li>#', $plugins, $matches );
 		$plugins = $matches[1];
 	}
-
-	foreach ( $plugins as $plugin ) {
+	
+    foreach ( $plugins as $plugin ) {
 		$plugin = urldecode( $plugin );
 		echo "Updating " . $plugin . "\r\n";
 		exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.zip' ) . ' > /dev/null' );
-		if ( file_exists( 'plugins/' . $plugin . '.zip' ) ) {
-			exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
-			exec( 'unzip -d plugins ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
+		if ( file_exists( 'plugins/' . $plugin ) ) {
+            exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
+        }
+
+        if ( file_exists( 'zips/' . $plugin . '.zip' ) ) {
+            exec( 'unzip -d plugins ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
 			exec( 'rm -rf ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
 		}
+
     }
 
 	if ( file_put_contents( 'plugins/.last-revision', $svn_last_revision ) )
