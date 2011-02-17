@@ -62,5 +62,5 @@ $minutes = ( $end_time - $start_time ) / 60;
 $seconds = ( $end_time - $start_time ) % 60;
 
 echo "[SUCCESS] Done updating plugins!\r\n";
-echo "It took " . number_format($minutes) . " minutes and " . $seconds . " seconds to update ". count($plugins)  ." plugins\r\n";
+echo "It took " . number_format($minutes) . " minute" . ( $minutes == 1 ? '' : 's' ) . " and " . $seconds . " second" . ( $seconds == 1 ? '' : 's' ) . " to update ". count($plugins)  ." plugin" . ( count($plugins) == 1 ? '' : 's') . "\r\n";
 echo "[DONE]\r\n";
