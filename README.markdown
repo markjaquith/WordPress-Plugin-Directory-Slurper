@@ -45,6 +45,11 @@ are smart. The script tracks the SVN revision number of your latest update and
 then asks the Plugins Trac install for a list of plugins that have changed since. 
 Only those changed plugins are updated after the initial sync.
 
+### Something went wrong, how do I do a partial update? ###
+
+The last successful update revision number is stored in `plugins/.last-revision`. 
+You can just overwrite that and the next `update` will start after that revision.
+
 Copyright & License
 -------------------
 Copyright (C) 2011 Mark Jaquith
