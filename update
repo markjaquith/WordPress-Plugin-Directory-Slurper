@@ -21,6 +21,8 @@ if ( file_exists( 'plugins/.last-revision' ) ) {
 	echo "You have not yet performed a successful sync. Settle in. This will take a while.\r\n";
 }
 
+$start_time = time();
+
 if ( $last_revision != $svn_last_revision ) {
 	if ( $last_revision ) {
 		$changelog_url = sprintf( 'http://plugins.trac.wordpress.org/log/?verbose=on&mode=follow_copy&format=changelog&rev=%d&limit=%d', $svn_last_revision, $svn_last_revision - $last_revision );
@@ -42,7 +44,7 @@ if ( $last_revision != $svn_last_revision ) {
 			exec( 'unzip -d plugins ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
 			exec( 'rm -rf ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
 		}
-	}
+    }
 
 	if ( file_put_contents( 'plugins/.last-revision', $svn_last_revision ) )
 		echo "[CLEANUP] Updated plugins/.last-revision to " . $svn_last_revision . "\r\n";
@@ -50,5 +52,10 @@ if ( $last_revision != $svn_last_revision ) {
 		echo "[ERROR] Could not update plugins/.last-revision to " . $svn_last_revision . "\r\n";
 }
 
+$end_time = time();
+$minutes = ( $end_time - $start_time ) / 60;
+$seconds = ( $end_time - $start_time ) % 60;
+
 echo "[SUCCESS] Done updating plugins!\r\n";
+echo "It took " . number_format($minutes) . " minutes and " . $seconds . " seconds to update ". count($plugins)  ." plugins\r\n";
 echo "[DONE]\r\n";
