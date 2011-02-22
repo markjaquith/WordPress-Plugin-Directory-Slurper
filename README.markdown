@@ -40,10 +40,10 @@ out and gives you the latest stable version
 
 ### How long will it take? ###
 
-Your first update will take a while. Perhaps a few hours. But subsequent updates 
-are smart. The script tracks the SVN revision number of your latest update and 
-then asks the Plugins Trac install for a list of plugins that have changed since. 
-Only those changed plugins are updated after the initial sync.
+Your first update will take a while. You'd be well-advised to let it run overnight. 
+But subsequent updates are smart. The script tracks the SVN revision number of your
+latest update and then asks the Plugins Trac install for a list of plugins that have 
+changed since. Only those changed plugins are updated after the initial sync.
 
 ### Something went wrong, how do I do a partial update? ###
 
