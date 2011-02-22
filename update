@@ -36,19 +36,22 @@ if ( $last_revision != $svn_last_revision ) {
 	}
 
 	foreach ( $plugins as $plugin ) {
-
 		$plugin = urldecode( $plugin );
-		echo "Updating " . $plugin . "\r\n";
-		exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.zip' ) . ' > /dev/null' );
-		if ( file_exists( 'plugins/' . $plugin ) ) {
-			exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
-		}
+		echo "Updating " . $plugin;
 
-		if ( file_exists( 'zips/' . $plugin . '.zip' ) ) {
+		$output = null; $return = null;
+		exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.zip' ) . ' > /dev/null', $output, $return );
+
+		if ( $return === 0 && file_exists( 'zips/' . $plugin . '.zip' ) ) {
+			if ( file_exists( 'plugins/' . $plugin ) )
+				exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
+
 			exec( 'unzip -d plugins ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
 			exec( 'rm -rf ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
+		} else {
+			echo '... download failed.';
 		}
-
+		echo "\r\n";
 	}
 
 	if ( file_put_contents( 'plugins/.last-revision', $svn_last_revision ) )
