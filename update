@@ -40,7 +40,7 @@ if ( $last_revision != $svn_last_revision ) {
 		echo "Updating " . $plugin;
 
 		$output = null; $return = null;
-		exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.latest-stable.zip' ) . ' > /dev/null', $output, $return );
+		exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.latest-stable.zip?nostats=1' ) . ' > /dev/null', $output, $return );
 
 		if ( $return === 0 && file_exists( 'zips/' . $plugin . '.zip' ) ) {
 			if ( file_exists( 'plugins/' . $plugin ) )
