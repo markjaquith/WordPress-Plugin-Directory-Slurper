@@ -1,0 +1,63 @@
+#!/usr/bin/php
+<?php
+echo "Determining most recent SVN revision...\r\n";
+try {
+	$changelog = @file_get_contents( 'http://plugins.trac.wordpress.org/log/?format=changelog&stop_rev=HEAD' );
+	if ( !$changelog )
+		throw new Exception( 'Could not fetch the SVN changelog' );
+	preg_match( '#\[([0-9]+)\]#', $changelog, $matches );
+	if ( !$matches[1] )
+		throw new Exception( 'Could not determine most recent revision.' );
+} catch ( Exception $e ) {
+	die( $e->getMessage() . "\r\n" );
+}
+$svn_last_revision = (int) $matches[1];
+echo "Most recent SVN revision: " . $svn_last_revision . "\r\n";
+if ( file_exists( 'readmes/.last-revision' ) ) {
+	$last_revision = (int) file_get_contents( 'readmes/.last-revision' );
+	echo "Last synced revision: " . $last_revision . "\r\n";
+} else {
+	$last_revision = false;
+	echo "You have not yet performed a successful sync. Settle in. This will take a while.\r\n";
+}
+
+$start_time = time();
+
+if ( $last_revision != $svn_last_revision ) {
+	if ( $last_revision ) {
+		$changelog_url = sprintf( 'http://plugins.trac.wordpress.org/log/?verbose=on&mode=follow_copy&format=changelog&rev=%d&limit=%d', $svn_last_revision, $svn_last_revision - $last_revision );
+		$changes = file_get_contents( $changelog_url );
+		preg_match_all( '#^' . "\t" . '*\* ([^/A-Z ]+)[ /].* \((added|modified|deleted|moved|copied)\)' . "\n" . '#m', $changes, $matches );
+		$plugins = array_unique( $matches[1] );
+	} else {
+		$plugins = file_get_contents( 'http://svn.wp-plugins.org/' );
+		preg_match_all( '#<li><a href="([^/]+)/">([^/]+)/</a></li>#', $plugins, $matches );
+		$plugins = $matches[1];
+	}
+
+	foreach ( $plugins as $plugin ) {
+		$plugin = urldecode( $plugin );
+		echo "Updating " . $plugin;
+
+		$output = null; $return = null;
+		exec( 'wget -q -np -O ' . escapeshellarg( 'readmes/' . $plugin . '.readme' ) . ' ' . escapeshellarg( 'http://plugins.svn.wordpress.org/' . $plugin . '/trunk/readme.txt' ) . ' > /dev/null', $output, $return );
+
+		if ( $return !== 0 || !file_exists( 'readmes/' . $plugin . '.readme' ) ) {
+			echo '... download failed.';
+		}
+		echo "\r\n";
+	}
+
+	if ( file_put_contents( 'readmes/.last-revision', $svn_last_revision ) )
+		echo "[CLEANUP] Updated readmes/.last-revision to " . $svn_last_revision . "\r\n";
+	else
+		echo "[ERROR] Could not update readmes/.last-revision to " . $svn_last_revision . "\r\n";
+}
+
+$end_time = time();
+$minutes = ( $end_time - $start_time ) / 60;
+$seconds = ( $end_time - $start_time ) % 60;
+
+echo "[SUCCESS] Done updating readmes!\r\n";
+echo "It took " . number_format($minutes) . " minute" . ( $minutes == 1 ? '' : 's' ) . " and " . $seconds . " second" . ( $seconds == 1 ? '' : 's' ) . " to update ". count($plugins)  ." plugin" . ( count($plugins) == 1 ? '' : 's') . "\r\n";
+echo "[DONE]\r\n";
