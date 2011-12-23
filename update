@@ -1,5 +1,33 @@
 #!/usr/bin/php
 <?php
+$args = $argv;
+$cmd = array_shift( $args );
+
+$type = 'all';
+if ( !empty( $args[0] ) ) {
+	$type = $args[0];
+}
+
+switch ( $type ) {
+	case 'readme':
+		$directory = 'readmes';
+		$download = 'readmes/%s.readme';
+		$url = 'http://plugins.svn.wordpress.org/%s/trunk/readme.txt';
+		break;
+	case 'all':
+		$directory = 'plugins';
+		$download = 'zips/%s.zip';
+		$url = 'http://downloads.wordpress.org/plugin/%s.latest-stable.zip?nostats=1';
+		break;
+	default:
+		echo $cmd . ": invalid command\r\n";
+		echo 'Usage: php ' . $cmd . " [command]\r\n\r\n";
+		echo "Available commands:\r\n";
+		echo "  all - Downloads full plugin zips\r\n";
+		echo "  readme - Downloads plugin readmes only\r\n";
+		die();
+}
+
 echo "Determining most recent SVN revision...\r\n";
 try {
 	$changelog = @file_get_contents( 'http://plugins.trac.wordpress.org/log/?format=changelog&stop_rev=HEAD' );
@@ -13,8 +41,8 @@ try {
 }
 $svn_last_revision = (int) $matches[1];
 echo "Most recent SVN revision: " . $svn_last_revision . "\r\n";
-if ( file_exists( 'plugins/.last-revision' ) ) {
-	$last_revision = (int) file_get_contents( 'plugins/.last-revision' );
+if ( file_exists( $directory . '/.last-revision' ) ) {
+	$last_revision = (int) file_get_contents( $directory . '/.last-revision' );
 	echo "Last synced revision: " . $last_revision . "\r\n";
 } else {
 	$last_revision = false;
@@ -40,24 +68,26 @@ if ( $last_revision != $svn_last_revision ) {
 		echo "Updating " . $plugin;
 
 		$output = null; $return = null;
-		exec( 'wget -q -np -O ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) . ' ' . escapeshellarg( 'http://downloads.wordpress.org/plugin/' . $plugin . '.latest-stable.zip?nostats=1' ) . ' > /dev/null', $output, $return );
+		exec( 'wget -q -np -O ' . escapeshellarg( sprintf($download, $plugin) ) . ' ' . escapeshellarg( sprintf($url, $plugin) ) . ' > /dev/null', $output, $return );
 
-		if ( $return === 0 && file_exists( 'zips/' . $plugin . '.zip' ) ) {
-			if ( file_exists( 'plugins/' . $plugin ) )
-				exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
+		if ( $return === 0 && file_exists( sprintf($download, $plugin) ) ) {
+			if ($type === 'all') {
+				if ( file_exists( 'plugins/' . $plugin ) )
+					exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
 
-			exec( 'unzip -o -d plugins ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
-			exec( 'rm -rf ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
+				exec( 'unzip -o -d plugins ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
+				exec( 'rm -rf ' . escapeshellarg( 'zips/' . $plugin . '.zip' ) );
+			}
 		} else {
 			echo '... download failed.';
 		}
 		echo "\r\n";
 	}
 
-	if ( file_put_contents( 'plugins/.last-revision', $svn_last_revision ) )
-		echo "[CLEANUP] Updated plugins/.last-revision to " . $svn_last_revision . "\r\n";
+	if ( file_put_contents( $directory . '/.last-revision', $svn_last_revision ) )
+		echo "[CLEANUP] Updated $directory/.last-revision to " . $svn_last_revision . "\r\n";
 	else
-		echo "[ERROR] Could not update plugins/.last-revision to " . $svn_last_revision . "\r\n";
+		echo "[ERROR] Could not update $directory/.last-revision to " . $svn_last_revision . "\r\n";
 }
 
 $end_time = time();
