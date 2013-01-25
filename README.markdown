@@ -45,6 +45,10 @@ But subsequent updates are smart. The script tracks the SVN revision number of y
 latest update and then asks the Plugins Trac install for a list of plugins that have 
 changed since. Only those changed plugins are updated after the initial sync.
 
+### How much disk space do I need? ###
+
+As of early 2013, it takes up about 4.1GB.
+
 ### Something went wrong, how do I do a partial update? ###
 
 The last successful update revision number is stored in `plugins/.last-revision`. 
