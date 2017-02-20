@@ -17,14 +17,13 @@ Requirements
 
 A Windows/Unix compatible version of this project that has some _significant_ performance improvements if you can use cURL and PHP's pThreads, is available [here](https://github.com/chriscct7/WordPress-Plugin-Directory-Slurper)
 
-
 Instructions
 ------------
 
 1. `cd WordPress-Plugin-Directory-Slurper`
 2. `./update`
 
-The `plugins/` directory will contain all the plugins, when the script is done.
+The `plugins/` directory will contain all the plugins when the script is done.
 
 FAQ
 ----
