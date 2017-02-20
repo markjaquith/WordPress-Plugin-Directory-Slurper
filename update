@@ -50,6 +50,7 @@ if ( file_exists( $directory . '/.last-revision' ) ) {
 }
 
 $start_time = time();
+$plugins = array();
 
 if ( $last_revision != $svn_last_revision ) {
 	if ( $last_revision ) {
