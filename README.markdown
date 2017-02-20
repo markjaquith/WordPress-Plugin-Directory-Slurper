@@ -13,7 +13,7 @@ Requirements
 
 * PHP 5.2
 * wget
-* Unix system (only tested on Mac OS X)
+* Unix system (tested on Mac OS X and Linux)
 
 A Windows/Unix compatible version of this project that has some _significant_ performance improvements if you can use cURL and PHP's pThreads, is available [here](https://github.com/chriscct7/WordPress-Plugin-Directory-Slurper)
 
