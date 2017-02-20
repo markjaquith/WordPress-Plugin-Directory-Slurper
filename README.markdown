@@ -28,33 +28,33 @@ The `plugins/` directory will contain all the plugins when the script is done.
 FAQ
 ----
 
-### Why download the zip files? Why not use SVN? ###
+### Why download the zip files? Why not use SVN?
 
-An SVN checkout of the entire repository is a BEAST of a thing. You don't want it, 
+An SVN checkout of the entire repository is a BEAST of a thing. You don't want it,
 trust me. Updates and cleanups can take **hours** or even **days** to complete.
 
-### Why not just do an SVN export of each plugin's trunk? ###
+### Why not just do an SVN export of each plugin's trunk?
 
-There is no guarantee that the plugin's trunk is the latest stable version. The 
-repository supports doing development in trunk, and designating a branch or tag 
-as the stable version. Using the zip file gets around this, as it figures it all 
+There is no guarantee that the plugin's trunk is the latest stable version. The
+repository supports doing development in trunk, and designating a branch or tag
+as the stable version. Using the zip file gets around this, as it figures it all
 out and gives you the latest stable version
 
-### How long will it take? ###
+### How long will it take?
 
-Your first update will take a while. You'd be well-advised to let it run overnight. 
+Your first update will take a while. You'd be well-advised to let it run overnight.
 But subsequent updates are smart. The script tracks the SVN revision number of your
-latest update and then asks the Plugins Trac install for a list of plugins that have 
+latest update and then asks the Plugins Trac install for a list of plugins that have
 changed since. Only those changed plugins are updated after the initial sync.
 
-### How much disk space do I need? ###
+### How much disk space do I need?
 
 As of February 2017, the script will download about 14 GB of zip files.  When
 unpacked, they will take up 32 GB of space.
 
-### Something went wrong, how do I do a partial update? ###
+### Something went wrong, how do I do a partial update?
 
-The last successful update revision number is stored in `plugins/.last-revision`. 
+The last successful update revision number is stored in `plugins/.last-revision`.
 You can just overwrite that and the next `update` will start after that revision.
 
 Copyright & License
