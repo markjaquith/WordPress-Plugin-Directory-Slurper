@@ -12,12 +12,12 @@ switch ( $type ) {
 	case 'readme':
 		$directory = 'readmes';
 		$download = 'readmes/%s.readme';
-		$url = 'http://plugins.svn.wordpress.org/%s/trunk/readme.txt';
+		$url = 'https://plugins.svn.wordpress.org/%s/trunk/readme.txt';
 		break;
 	case 'all':
 		$directory = 'plugins';
 		$download = 'zips/%s.zip';
-		$url = 'http://downloads.wordpress.org/plugin/%s.latest-stable.zip?nostats=1';
+		$url = 'https://downloads.wordpress.org/plugin/%s.latest-stable.zip?nostats=1';
 		break;
 	default:
 		echo $cmd . ": invalid command\r\n";
@@ -30,7 +30,7 @@ switch ( $type ) {
 
 echo "Determining most recent SVN revision...\r\n";
 try {
-	$changelog = @file_get_contents( 'http://plugins.trac.wordpress.org/log/?format=changelog&stop_rev=HEAD' );
+	$changelog = @file_get_contents( 'https://plugins.trac.wordpress.org/log/?format=changelog&stop_rev=HEAD' );
 	if ( !$changelog )
 		throw new Exception( 'Could not fetch the SVN changelog' );
 	preg_match( '#\[([0-9]+)\]#', $changelog, $matches );
@@ -53,12 +53,12 @@ $start_time = time();
 
 if ( $last_revision != $svn_last_revision ) {
 	if ( $last_revision ) {
-		$changelog_url = sprintf( 'http://plugins.trac.wordpress.org/log/?verbose=on&mode=follow_copy&format=changelog&rev=%d&limit=%d', $svn_last_revision, $svn_last_revision - $last_revision );
+		$changelog_url = sprintf( 'https://plugins.trac.wordpress.org/log/?verbose=on&mode=follow_copy&format=changelog&rev=%d&limit=%d', $svn_last_revision, $svn_last_revision - $last_revision );
 		$changes = file_get_contents( $changelog_url );
 		preg_match_all( '#^' . "\t" . '*\* ([^/A-Z ]+)[ /].* \((added|modified|deleted|moved|copied)\)' . "\n" . '#m', $changes, $matches );
 		$plugins = array_unique( $matches[1] );
 	} else {
-		$plugins = file_get_contents( 'http://svn.wp-plugins.org/' );
+		$plugins = file_get_contents( 'https://plugins.svn.wordpress.org/' );
 		preg_match_all( '#<li><a href="([^/]+)/">([^/]+)/</a></li>#', $plugins, $matches );
 		$plugins = $matches[1];
 	}
