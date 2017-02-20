@@ -49,7 +49,8 @@ changed since. Only those changed plugins are updated after the initial sync.
 
 ### How much disk space do I need? ###
 
-As of late 2013, it takes up about 12GB.
+As of February 2017, the script will download about 14 GB of zip files.  When
+unpacked, they will take up 32 GB of space.
 
 ### Something went wrong, how do I do a partial update? ###
 
