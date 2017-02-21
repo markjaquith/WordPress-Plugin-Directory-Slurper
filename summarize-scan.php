@@ -48,11 +48,18 @@ echo '=======  ' . str_pad( '======', $max_name_length - 4 ) . "===============\
 foreach ( $scan_info as $plugin ) {
 	$api_url = "https://api.wordpress.org/plugins/info/1.0/$plugin[plugin_name].json?fields=active_installs";
 	$result = json_decode( file_get_contents( $api_url ) );
-	$active_installs = $result->active_installs;
+	if ( $result ) {
+		$active_installs = str_pad(
+			number_format( $result->active_installs ),
+			8, ' ', STR_PAD_LEFT
+		) . '+';
+	} else {
+		// The plugins API returns `null` for nonexistent/removed plugins
+		$active_installs = '  REMOVED';
+	}
 	echo str_pad( $plugin['matches'], 7, ' ', STR_PAD_LEFT )
 		. '  '
 		. str_pad( $plugin['plugin_name'], $max_name_length )
 		. '  '
-		. str_pad( number_format( $active_installs ), 8, ' ', STR_PAD_LEFT )
-		. "+\n";
+		. "$active_installs\n";
 }
