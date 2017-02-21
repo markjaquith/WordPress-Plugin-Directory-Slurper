@@ -35,6 +35,24 @@ to scan the plugins repository.  See also the
 [plugins directory maintenance](https://make.wordpress.org/plugins/handbook/directory-maintenance/#scanning-the-repository)
 documentation page.
 
+This repository also includes a script to show a summary of a scan.  For example:
+
+```sh
+$ ag --php --skip-vcs-ignores rest_get_date_with_gmt | tee scans/rest_get_date_with_gmt.txt
+$ ./summarize-scan.php scans/rest_get_date_with_gmt.txt
+```
+
+```
+5 matching plugins
+Matches  Plugin                             Active installs
+=======  ======                             ===============
+      4  rest-api                                   40,000+
+      4  wptoandroid                                    30+
+      5  custom-contact-forms                       60,000+
+      2  appmaker-wp-mobile-app-manager                 50+
+      4  appmaker-woocommerce-mobile-app-manager       200+
+```
+
 FAQ
 ----
 
