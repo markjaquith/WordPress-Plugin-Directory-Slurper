@@ -25,6 +25,16 @@ Instructions
 
 The `plugins/` directory will contain all the plugins when the script is done.
 
+### Scanning the repo
+
+You can use
+[`ack`](https://beyondgrep.com/)
+or
+[`ag`](https://github.com/ggreer/the_silver_searcher)
+to scan the plugins repository.  See also the
+[plugins directory maintenance](https://make.wordpress.org/plugins/handbook/directory-maintenance/#scanning-the-repository)
+documentation page.
+
 FAQ
 ----
 
