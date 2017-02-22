@@ -3,6 +3,8 @@
 $args = $argv;
 $cmd = array_shift( $args );
 
+chdir( dirname( __FILE__ ) );
+
 $type = 'all';
 if ( !empty( $args[0] ) ) {
 	$type = $args[0];
