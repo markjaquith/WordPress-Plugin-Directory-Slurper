@@ -46,7 +46,7 @@ echo 'Matches  ' . str_pad( 'Plugin', $max_name_length - 3 ) . "Active installs\
 echo '=======  ' . str_pad( '======', $max_name_length - 3 ) . "===============\n";
 
 foreach ( $scan_info as $plugin ) {
-	$api_url = "https://api.wordpress.org/plugins/info/1.0/$plugin[plugin_name].json?fields=active_installs";
+	$api_url = "https://api.wordpress.org/plugins/info/1.1/?action=plugin_information&request[slug]=$plugin[plugin_name]&request[fields][active_installs]=1";
 	$result = json_decode( file_get_contents( $api_url ) );
 	if ( $result ) {
 		$active_installs = str_pad(
