@@ -63,14 +63,18 @@ if ( $last_revision !== $svn_last_revision ) {
 			$svn_last_revision,
 			$svn_last_revision - $last_revision
 		);
+		echo "Fetching plugins changelog: $changelog_url\r\n";
 		$changes = file_get_contents( $changelog_url );
 		preg_match_all( '#^' . "\t" . '*\* ([^/A-Z ]+)[ /].* \((added|modified|deleted|moved|copied)\)' . "\n" . '#m', $changes, $matches );
 		$plugins = array_unique( $matches[1] );
 	} else {
+		echo "Fetching list of all plugins\r\n";
 		$plugins = file_get_contents( 'https://plugins.svn.wordpress.org/' );
 		preg_match_all( '#<li><a href="([^/]+)/">([^/]+)/</a></li>#', $plugins, $matches );
 		$plugins = $matches[1];
 	}
+
+	echo count( $plugins ) . " plugins to update...\r\n";
 
 	foreach ( $plugins as $plugin ) {
 		$plugin = urldecode( $plugin );
