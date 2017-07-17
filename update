@@ -65,6 +65,10 @@ if ( $last_revision !== $svn_last_revision ) {
 		);
 		echo "Fetching plugins changelog: $changelog_url\r\n";
 		$changes = file_get_contents( $changelog_url );
+		if ( ! $changes ) {
+			// Something went wrong; there should be a warning message above
+			throw new Exception( 'Failed to download plugins changelog.' );
+		}
 		preg_match_all( '#^' . "\t" . '*\* ([^/A-Z ]+)[ /].* \((added|modified|deleted|moved|copied)\)' . "\n" . '#m', $changes, $matches );
 		$plugins = array_unique( $matches[1] );
 	} else {
