@@ -11,11 +11,13 @@ Really handy for doing local searches across all WordPress plugins.
 Requirements
 ------------
 
-* PHP 5.2
-* wget
 * Unix system (tested on Mac OS X and Linux)
+* PHP 5.2 or higher
+* `wget` and `svn` command-line executables installed
 
-A Windows/Unix compatible version of this project that has some _significant_ performance improvements if you can use cURL and PHP's pThreads, is available [here](https://github.com/chriscct7/WordPress-Plugin-Directory-Slurper)
+A Windows/Unix compatible version of this project that has comparable
+performance (if you can use cURL and PHP's pThreads) is available
+[here](https://github.com/chriscct7/WordPress-Plugin-Directory-Slurper).
 
 Instructions
 ------------
@@ -66,14 +68,17 @@ trust me. Updates and cleanups can take **hours** or even **days** to complete.
 There is no guarantee that the plugin's trunk is the latest stable version. The
 repository supports doing development in trunk, and designating a branch or tag
 as the stable version. Using the zip file gets around this, as it figures it all
-out and gives you the latest stable version
+out and gives you the latest stable version.
 
 ### How long will it take?
 
-Your first update will take a while. You'd be well-advised to let it run overnight.
-But subsequent updates are smart. The script tracks the SVN revision number of your
-latest update and then asks the Plugins Trac install for a list of plugins that have
-changed since. Only those changed plugins are updated after the initial sync.
+Your first update will take a while (at least a couple of hours, and
+potentially overnight, depending on your connection and disk speeds).
+
+But subsequent updates are smarter. The script tracks the SVN revision number
+of your latest update and then asks the Plugins Trac install for a list of
+plugins that have changed since. Only those changed plugins are updated after
+the initial sync.
 
 ### How much disk space do I need?
 
@@ -84,6 +89,15 @@ unpacked, they will take up 32 GB of space.
 
 The last successful update revision number is stored in `plugins/.last-revision`.
 You can just overwrite that and the next `update` will start after that revision.
+
+### What is this thing actually doing to my computer?
+
+Once downloads have started, you can use a command like this to monitor the
+tasks being executed by this tool:
+
+```sh
+watch -n .5 "pstree -pa `pgrep -f '^xargs -n 1 -P 12 ./download'`"
+```
 
 Copyright & License
 -------------------

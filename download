@@ -1,0 +1,133 @@
+#!/usr/bin/php
+<?php
+$args = $argv;
+$cmd = array_shift( $args );
+
+chdir( dirname( __FILE__ ) );
+
+$type = $args[0];
+
+function report_status( $data ) {
+	global $plugin;
+
+	$data['plugin'] = $plugin;
+	echo json_encode( $data ) . "\n";
+}
+
+if ( ! isset( $args[1] ) || ! $args[1] ) {
+	report_status( array(
+		'type'    => 'error',
+		'details' => 'Invalid plugin slug.',
+	) );
+	die();
+}
+
+$plugin = $args[1];
+
+switch ( $type ) {
+	case 'readme':
+		$download_path = sprintf(
+			'readmes/%s.readme',
+			$plugin
+		);
+		$download_url = sprintf(
+			'https://plugins.svn.wordpress.org/%s/trunk/readme.txt',
+			$plugin
+		);
+		break;
+
+	case 'all':
+		$download_path = sprintf(
+			'zips/%s.zip',
+			$plugin
+		);
+		$download_url = sprintf(
+			'https://downloads.wordpress.org/plugin/%s.latest-stable.zip?nostats=1',
+			$plugin
+		);
+		break;
+
+	default:
+		report_status( array(
+			'type'    => 'error',
+			'details' => 'Invalid command.',
+		) );
+		die();
+}
+
+report_status( array(
+	'type' => 'start',
+) );
+
+exec(
+	'wget -q -np '
+	. escapeshellarg( $download_url )
+	. ' -O ' . escapeshellarg( $download_path )
+	. ' > /dev/null',
+	$output,
+	$return
+);
+
+if ( $return === 0 && file_exists( $download_path ) ) {
+	// The download succeeded.
+
+	if ( $type === 'all' ) {
+		// Unzip the plugin file, limiting to one plugin at a time across all
+		// processes.  Otherwise, for slow disk speeds, this tool spends most
+		// of its time unzipping.  (For fast disks like SSDs this doesn't seem
+		// to make much difference.)
+		$unzip_lock = fopen( 'plugins/.unzip_lock', 'w' );
+		if ( ! $unzip_lock ) {
+			report_status( array(
+				'type'    => 'error',
+				'details' => 'Failed to open unzip lockfile.',
+			) );
+			die();
+		}
+
+		if ( ! flock( $unzip_lock, LOCK_EX ) ) {
+			report_status( array(
+				'type'    => 'error',
+				'details' => 'Failed to lock unzip lockfile.',
+			) );
+			die();
+		}
+
+		if ( file_exists( 'plugins/' . $plugin ) ) {
+			exec( 'rm -rf ' . escapeshellarg( 'plugins/' . $plugin ) );
+		}
+
+		exec( 'unzip -o -d plugins ' . escapeshellarg( $download_path ) );
+		exec( 'rm -rf ' . escapeshellarg( $download_path ) );
+
+		flock( $unzip_lock, LOCK_UN );
+		fclose( $unzip_lock );
+	}
+
+	report_status( array(
+		'type' => 'done',
+	) );
+
+} else if ( $return === 8 ) {
+	// Server issued an error response (404 for missing plugins).  See:
+	// https://www.gnu.org/software/wget/manual/html_node/Exit-Status.html
+	// TODO Detect 5xx errors
+
+	report_status( array(
+		'type'    => 'fail',
+		'details' => 'Could not download plugin.',
+	) );
+
+} else {
+	// Some other error occurred.
+
+	$error_message = "Bad exit code from `wget` ($return).";
+	if ( $return === 127 ) {
+		$error_message .= '  Make sure `wget` is installed.';
+	}
+	report_status( array(
+		'type'    => 'error',
+		'details' => $error_message,
+	) );
+
+}
