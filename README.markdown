@@ -76,7 +76,7 @@ Your first update will take a while (at least a couple of hours, and
 potentially overnight, depending on your connection and disk speeds).
 
 But subsequent updates are smarter. The script tracks the SVN revision number
-of your latest update and then asks the Plugins Trac install for a list of
+of your latest update and then asks the plugins SVN repository for a list of
 plugins that have changed since. Only those changed plugins are updated after
 the initial sync.
 
