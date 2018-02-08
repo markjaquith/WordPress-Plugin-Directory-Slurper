@@ -82,8 +82,9 @@ the initial sync.
 
 ### How much disk space do I need?
 
-As of February 2017, the script will download about 14 GB of zip files.  When
-unpacked, they will take up 32 GB of space.
+As of December 2017, the plugin repository contains over 70,000 plugins. The
+script will download around 20 GB of zip files which, when unpacked, will use
+around 45 GB of disk space.
 
 ### Something went wrong, how do I do a partial update?
 
