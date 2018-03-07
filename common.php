@@ -59,6 +59,7 @@ function download_plugins_internal( $type, $plugin_names, $is_partial_sync ) {
 	$descriptors = array(
 		0 => array( 'file', $download_path, 'r' ), // `xargs` will read from this file
 		1 => array( 'pipe', 'w' ),                 // `xargs` will write to stdout
+		2 => STDERR,
 	);
 	$xargs = proc_open(
 		'xargs -n 1 -P 12 ./download ' . $type,

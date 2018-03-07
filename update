@@ -119,9 +119,11 @@ if ( $last_revision === $svn_last_revision ) {
 				echo ".";
 			}
 
-		} else if ( preg_match( '#^   [ADMR] /([^/]+)/#', $line, $matches ) ) {
+		} else if ( preg_match( '#^   [ADMR] /([^/(]+)/#', $line, $matches ) ) {
 			// This line indicates an operation performed on a plugin file.
-			$plugin = $matches[1];
+			// For copies we get lines like "   A /plugin-slug (from /...:###)"
+			// (r1725406 for example) so trim to remove any extra spaces.
+			$plugin = trim( $matches[1] );
 
 			if ( ! isset( $plugins[ $plugin ] ) ) {
 				// This is the first time we've seen this plugin.
