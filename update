@@ -79,7 +79,7 @@ if ( $last_revision === $svn_last_revision ) {
 	// [
 	//     {
 	//         'number': RevisionNumber,
-	//         'plugins': {
+	//         'to_update': {
 	//             'plugin-slug': true,
 	//             ...
 	//         }
