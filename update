@@ -10,12 +10,24 @@ if ( ! empty( $args[0] ) ) {
 	$type = $args[0];
 }
 
-if ( $type !== 'readme' && $type !== 'all' ) {
-	echo $cmd . ": invalid command\n";
-	echo 'Usage: php ' . $cmd . " [command]\n\n";
+$parallel = 12;
+if ( ! empty( $args[1] ) ) {
+	$parallel = (int) $args[1];
+}
+
+if (
+	( $type !== 'readme' && $type !== 'all' ) ||
+	$parallel < 1 || $parallel > 20
+) {
+	echo $cmd . ": invalid arguments\n";
+	echo 'Usage: php ' . $cmd . " [command] [parallel=12]\n\n";
 	echo "Available commands:\n";
-	echo "  all - Downloads full plugin zips\n";
-	echo "  readme - Downloads plugin readmes only\n";
+	echo "  all    - Downloads full plugin zips. This is the default.\n";
+	echo "  readme - Downloads plugin readmes only.\n";
+	echo "\n";
+	echo "Set 'parallel' to control the number of parallel processes.\n";
+	echo "  A smaller number may go more smoothly for slower connections.\n";
+	echo "  More than 12 is not recommended.\n";
 	die();
 }
 

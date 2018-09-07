@@ -27,6 +27,8 @@ Instructions
 
 The `plugins/` directory will contain all the plugins when the script is done.
 
+Run `./update help` for more options.
+
 ### Scanning the repo
 
 You can use
@@ -97,7 +99,7 @@ Once downloads have started, you can use a command like this to monitor the
 tasks being executed by this tool:
 
 ```sh
-watch -n .5 "pstree -pa `pgrep -f '^xargs -n 1 -P 12 ./download'`"
+watch -n .5 "pstree -pa `pgrep -f '^xargs -n 1 -P .+ ./download'`"
 ```
 
 Copyright & License

@@ -56,7 +56,9 @@ switch ( $type ) {
 }
 
 report_status( array(
-	'type' => 'start',
+	'type'          => 'start',
+	'download_path' => $download_path,
+	'download_url'  => $download_url,
 ) );
 
 exec(
