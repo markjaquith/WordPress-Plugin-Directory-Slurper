@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 $args = $argv;
 $cmd = array_shift( $args );
