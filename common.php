@@ -46,7 +46,9 @@ function download_plugins_internal( $type, $plugin_names, $is_partial_sync ) {
 	// Data structures defined previously for partial sync
 	global $plugins, $revisions;
 
-	$current_revision = $revisions[ count( $revisions ) - 1 ]['number'];
+	if ( $is_partial_sync ) {
+		$current_revision = $revisions[ count( $revisions ) - 1 ]['number'];
+	}
 
 	$stats = array(
 		'total'   => count( $plugin_names ),
