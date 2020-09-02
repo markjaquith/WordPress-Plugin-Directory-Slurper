@@ -34,10 +34,11 @@ if (
 require_once 'common.php';
 
 echo "Determining most recent SVN revision...\n";
+
 try {
-	$changelog = @file_get_contents(
-		'https://plugins.trac.wordpress.org/log/?format=changelog&stop_rev=HEAD'
-	);
+	ini_set( 'user_agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0' );
+	$changelog = @file_get_contents( 'https://plugins.trac.wordpress.org/log/?format=changelog&stop_rev=HEAD' );
+	print_r( $changelog );
 	if ( ! $changelog ) {
 		throw new Exception( 'Could not fetch the SVN changelog' );
 	}
@@ -50,6 +51,7 @@ try {
 }
 
 $svn_last_revision = (int) $matches[1];
+
 echo "Most recent SVN revision : $svn_last_revision\n";
 $last_revision = read_last_revision( $type );
 
